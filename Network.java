@@ -30,6 +30,12 @@ public class Network {
      *  If there is no such user, returns null.
      *  Notice that the method receives a String, and returns a User object. */
     public User getUser(String name) {
+         for (int i = 0; i < getUserCount(); i++){
+            if (users[i].getName().equals(name)){
+                return users[i];
+            }
+            
+        }
         //// Replace the following statement with your code
         return null;
     }
@@ -39,6 +45,14 @@ public class Network {
     *  If the given name is already a user in this network, does nothing and returns false;
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
+        if (getUser(name) != null){
+            return false;
+        }
+        else if (getUserCount() < this.userCount){
+            this.userCount++;
+            users[this.userCount - 1] = new User(name);
+            return true;
+        }
         //// Replace the following statement with your code
         return false;
     }
@@ -47,6 +61,15 @@ public class Network {
      *  If any of the two names is not a user in this network,
      *  or if the "follows" addition failed for some reason, returns false. */
     public boolean addFollowee(String name1, String name2) {
+        if (name1 == null || name2 == null){
+            return false;
+        }
+        User user1 = getUser(name1);
+        User user2 = getUser(name2);
+        if (user1 != null && user2 != null) {
+            return user1.addFollowee(name2);
+
+        }
         //// Replace the following statement with your code
         return false;
     }
@@ -54,27 +77,61 @@ public class Network {
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        //// Replace the following statement with your code
-        return null;
+        User mostRecommendedUserToFollow = null;
+        for (int i = 0; i < getUserCount(); i++){
+            if (users[i].getName().equals(name)){
+                continue;
+            }
+            else if(users[i].getfCount() > mostRecommendedUserToFollow.getfCount()){
+                mostRecommendedUserToFollow = users[i];
+            }
+        }
+
+        if (mostRecommendedUserToFollow == null) {
+            return null;
+        }
+        return mostRecommendedUserToFollow.getName();
     }
 
     /** Computes and returns the name of the most popular user in this network: 
      *  The user who appears the most in the follow lists of all the users. */
     public String mostPopularUser() {
+        String mostPopularUser = null;
+        int maxCount = 0;
+        for (int i = 0; i < getUserCount(); i++){
+            int currentCount = followeeCount(users[i].getName());
+            if (currentCount > maxCount){
+                maxCount = currentCount;
+                mostPopularUser = users[i].getName();
+            }
+        }       
         //// Replace the following statement with your code
-        return null;
+        return mostPopularUser;
     }
 
     /** Returns the number of times that the given name appears in the follows lists of all
      *  the users in this network. Note: A name can appear 0 or 1 times in each list. */
     private int followeeCount(String name) {
+        int count = 0;
+        for (int i = 0; i < getUserCount(); i++){
+            if (users[i].follows(name)){
+                count++;
+            }
+        }       
+
+
         //// Replace the following statement with your code
-        return 0;
+        return count;
     }
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
-       //// Replace the following statement with your code
-       return null;
+        String result = "";
+        for (int i = 0; i < getUserCount(); i++){
+            result += users[i].toString() + "\n";
+        }
+        return result;
     }
+       //// Replace the following statement with your code
+      
 }
