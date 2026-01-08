@@ -46,10 +46,10 @@ public class Network {
     *  Otherwise, creates a new user with the given name, adds the user to this network, and returns true. */
     public boolean addUser(String name) {
 
-        if (getUser(name) == null){
+        if (getUser(name) != null){
             return false;
         }
-        if (getUserCount() < this.userCount){
+        if (this.userCount < users.length){
             this.userCount++;
             users[this.userCount - 1] = new User(name);
             return true;
