@@ -68,31 +68,35 @@ public class Network {
         }
         User user1 = getUser(name1);
         User user2 = getUser(name2);
-        if (user1 != null && user2 != null) {
-            return user1.addFollowee(name2);
+        if (user1 == null || user2 == null || name1.equals(name2)){ 
+            return false;
 
         }
         //// Replace the following statement with your code
-        return false;
+        return user1.addFollowee(name2);
     }
     
     /** For the user with the given name, recommends another user to follow. The recommended user is
      *  the user that has the maximal mutual number of followees as the user with the given name. */
     public String recommendWhoToFollow(String name) {
-        User mostRecommendedUserToFollow = null;
+        User user = getUser(name);
+        String mostRecommendedUserToFollow = null;
+        int maxMutualCount = -1;
         for (int i = 0; i < getUserCount(); i++){
-            if (users[i].getName().equals(name)){
-                continue;
-            }
-            else if(users[i].getfCount() > mostRecommendedUserToFollow.getfCount()){
-                mostRecommendedUserToFollow = users[i];
+            User otherUser = users[i];
+            if (!otherUser.getName().equals(name)&& !user.follows(otherUser.getName())){
+                int mutualCount = user.countMutual(otherUser);
+                if (mutualCount > maxMutualCount){
+                    maxMutualCount = mutualCount;
+                    mostRecommendedUserToFollow = otherUser.getName();
+                }
             }
         }
-
-        if (mostRecommendedUserToFollow == null) {
+        
+        if (maxMutualCount == 0) {
             return null;
         }
-        return mostRecommendedUserToFollow.getName();
+        return mostRecommendedUserToFollow;
     }
 
     /** Computes and returns the name of the most popular user in this network: 
@@ -128,12 +132,20 @@ public class Network {
 
     // Returns a textual description of all the users in this network, and who they follow.
     public String toString() {
-        String result = "";
+        String result = "Network:";
+
         for (int i = 0; i < getUserCount(); i++){
-            result += users[i].toString() + "\n";
+                result +="\n " + users[i].toString();
+            
+        
         }
         return result;
+        
     }
        //// Replace the following statement with your code
       
+
+
+
 }
+
